@@ -13,7 +13,7 @@ $is_debug = true;
 // $response = xmlrpc_decode_request(xml, method)
 $url2wsdl = 'http://82.138.16.126:8888/TaxiPublic/Service.svc?wsdl';
 
-$url = 'http://127.0.0.1:8000/response.php?foo=yes.we_can&baz=foo-bar';
+$url = 'http://127.0.0.1:8001/response.php?foo=yes.we_can&baz=foo-bar';
 
 ob_start();
 doRequest($is_debug ? $url : $url2wsdl);
@@ -39,18 +39,23 @@ $compare_result = 0;
 
 //временем реакции (время выполнения запроса)
 $time_execute = isset($_SERVER['REQUEST_TIME']) ? $_SERVER['REQUEST_TIME'] : strtotime(date("Ymd"));
+//echo PHP_EOL;
+//print_r($time_execute);
+
 
 //вердиктом (OK|FAIL) в базу
-$is_fail = !isCorrectAnswer($body_response);
-
+$is_fail = !isCorrectAnswer($body_response, $tag = 'RegNum', $value = 'em33377');
 
 
 // если сравнение выдало FAIL
 if($is_fail) {
     // необходимо сохранять тело ответа сервиса (и по желанию, хедеры)
     $info = [
-    $time_execute,
-    $body_response,
+        $time_execute,
+        $wail = 1,  //@todo
+        $is_fail,
+        $body_response,
+        $headers_response
     ];
     doSave($info);
     //doSave($id_request, $body_response);
